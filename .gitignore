@@ -1,0 +1,13 @@
+/bin/
+## maven에 해당되는 최종 결과물들 중 ignore할 파일들
+**/target/
+**/build
+**/out
+
+## eclipse
+**/.settings
+**/.classpath
+**/.project
+
+## mac
+.DS_Store
