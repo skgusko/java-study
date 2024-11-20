@@ -7,7 +7,7 @@
 		<artifactId>java-study</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>practice01</artifactId>
+	<artifactId>practice02</artifactId>
 
 	<properties>
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
@@ -19,6 +19,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>practice01</finalName>
+		<finalName>practice02</finalName>
 	</build>
 </project>
