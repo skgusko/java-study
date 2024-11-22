@@ -1,6 +1,6 @@
 package paint;
 
-public class Point {
+public class Point implements Drawable { //java.lang.Object 상속 중임 
 	private int x;
 	private int y;
 	
@@ -27,34 +27,26 @@ public class Point {
 	}
 	
 	public void show() {
-		System.out.println("Point[x=" + x +
-				",y=" + y +
-				"]을 그렸습니다"
-				);
+		System.out.println("Point[x=" + x + ", y=" + y + "]을 그렸습니다");
 	}
 	
 	public void show(boolean visible) { 
 		if (visible) {
-//		System.out.println("Point[x=" + x +
-//				",y=" + y +
-//				"]을 그렸습니다"
-//				);
 			show();
 		}
 		else {
-//			System.out.println("Point[x=" + x +
-//					",y=" + y +
-//					"]을 지웠습니다"
-//					);
 			disappear();
 		}
 	}
 
 	public void disappear() {
-		System.out.println("Point[x=" + x +
-				",y=" + y +
-				"]을 지웠습니다"
-				);
+		System.out.println("Point[x=" + x + ", y=" + y + "]을 지웠습니다");
+		
+	}
+
+	@Override
+	public void draw() {
+		show();
 		
 	}
 }
