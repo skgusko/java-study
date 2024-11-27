@@ -10,7 +10,7 @@ import java.io.Reader;
 public class FileReaderTest {
 
 	public static void main(String[] args) {
-		Reader in = null; //한 번에 3byte씩 읽음 
+		Reader in = null; //한 번에 2byte씩 읽음 
 		InputStream is = null;
 		try {
 			in = new FileReader("test.txt");
@@ -30,8 +30,8 @@ public class FileReaderTest {
 			count = 0;
 			data = -1;
 			while((data = is.read()) != -1) {
-				System.out.print((char)data); //1byte씩 읽으므로 한글이 깨짐! utf-8 코드에는 
-				count++; //utf-8 코드이고 한글 7글자이니까 총 3byte * 7 = 21byte이고, FileInputStream은 1byte씩 읽으므로 결과값은 21
+				System.out.print((char)data); //1byte씩 읽으므로 한글이 깨짐! utf-8 코드에는 한글 한 글자가 3바이트로 표현됨 
+				count++; //utf-8 코드이고 한글 7글자이니까 총 3byte * 7 = 21byte이고, FileInputStream은 1byte씩 읽으므로 결과값
 			}
 			System.out.println("");
 			System.out.println("count : " + count);
