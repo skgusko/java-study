@@ -16,7 +16,7 @@ public class LocalHost {
 			System.out.println(hostIPAddress);
 			
 			byte[] IPAddresses = inetAddress.getAddress(); //unsigned
-			for(byte IPAddress :IPAddresses) {
+			for(byte IPAddress : IPAddresses) {
 				System.out.println(IPAddress & 0X000000ff); //signed로 바꾸기
 			}
 			

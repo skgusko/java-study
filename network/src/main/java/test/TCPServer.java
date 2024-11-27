@@ -18,7 +18,7 @@ public class TCPServer {
 			// 2. 바인딩(binding) - IP, PORT를 서버 소켓에 할당
 			// 	  Socket에 InetSocketAddress[InetAddress(IPAddress) + port]를 바인딩 한다.
 			// 	  IPAddress: 0.0.0.0: 특정 호스트 IP를 바인딩하지 않는다. 
-			serverSocket.bind(new InetSocketAddress("0.0.0.0", 5000)); //어떤 IP가 자신에게 connect할 수 있는지를 적어줌. 0.0.0.0 -> connect할 수 있는 대상을 다 열어줌 
+			serverSocket.bind(new InetSocketAddress("0.0.0.0", 50000)); //어떤 IP가 자신에게 connect할 수 있는지를 적어줌. 0.0.0.0 -> connect할 수 있는 대상을 다 열어줌 
 			
 			// 3. accept
 			Socket socket = serverSocket.accept(); //blocking (연결될 때까지 block, 잘 연결됐으면 데이터 통신용 소켓 생성해서 리턴) 
