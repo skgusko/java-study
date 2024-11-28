@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class TCPServer {
 
@@ -51,8 +52,10 @@ public class TCPServer {
 					// 6. 데이터 쓰기
 					os.write(data.getBytes("utf-8")); //string을 byte로 변경해줘야 함
 				}
+			} catch (SocketException e) {
+				System.out.println("[server] Socket Exception : " + e);
 			} catch (IOException e) {
-				System.out.println("error : " + e);
+				System.out.println("[server] error : " + e);
 			} finally {
 				try {
 					if (socket != null && !socket.isClosed()) { //내가 클로즈 안했는데 (프로그램 등에 의해) 닫혀있을 수도 있기에 isClosed 확인 
