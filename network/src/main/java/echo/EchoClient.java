@@ -1,56 +1,63 @@
 package echo;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Scanner;
 
 public class EchoClient {
-
 	private static final String SERVER_IP = "127.0.0.1";
+	
 	public static void main(String[] args) {
+		Scanner scanner = null;
 		Socket socket = null;
 		
 		try {
-			// 1. 소켓 생성
+			scanner = new Scanner(System.in);
 			socket = new Socket();
 		
-			// 2. 서버 연결
 			socket.connect(new InetSocketAddress(SERVER_IP, EchoServer.PORT));
 			
-			// 3. IO Stream 받아오기
-			InputStream is = socket.getInputStream();
-			OutputStream os = socket.getOutputStream();
+			PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "utf-8"), true);
+			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
 			
-			// 4. 쓰기
-			String data = "Hello World";
-			os.write(data.getBytes("utf-8"));
-			
-			// 5. 읽기
-			byte[] buffer = new byte[256];
-			int readByteCount = is.read(buffer);
-			if (readByteCount == -1) { //상대가 close()를 명시적으로 호출했을 때 -1 임. 우아한 종료 (명시적이지 않은 경우 ex. 컴퓨터 꺼질때)
-				log("closed by server");
-				return;
+			while(true) {
+				System.out.print(">>");
+				String line = scanner.nextLine();
+				
+				if ("exit".equals(line)) {
+					break;
+				}
+				
+				pw.println(line); //개행 있는 게 프로토콜
+				String data = br.readLine();
+				if (data == null) {
+					log("closed server");
+					break;
+				}
+				
+				System.out.println("<<" + data);
 			}
-			
-			data = new String(buffer, 0, readByteCount, "utf-8"); //byte -> string
-			System.out.println(data);
-			
 			
 		} catch (SocketException e) {
 			log("error : " + e);
 		} catch (IOException e) {
 			log("error : " + e);
 		} finally {
-			if (socket != null && !socket.isClosed()) {
-				try {
-					socket.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+			try {
+				if (scanner != null) {
+					scanner.close();
 				}
+				if (socket != null && !socket.isClosed()) {
+					socket.close();
+				}  
+			} catch (IOException e) {
+					e.printStackTrace();
 			}
 		}
 
