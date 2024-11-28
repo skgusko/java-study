@@ -2,6 +2,7 @@ package test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -23,24 +24,44 @@ public class TCPServer {
 			// 3. accept
 			Socket socket = serverSocket.accept(); //blocking (연결될 때까지 block, 잘 연결됐으면 데이터 통신용 소켓 생성해서 리턴) 
 			
-			System.out.println("연결 성공");
-			
-			// 4. IO Stream 받아오기 
-			InputStream is = socket.getInputStream(); //추상화. 소켓의 InputStream 리턴
-			
-			// 5. 데이터 읽기
-			byte[] buffer = new byte[256];
-			int readByteCount = is.read(buffer); //blocking (데이터 들어오기 전까지 잠듦)
-			if (readByteCount == -1) { 
-				// closed by client (소켓의 경우, -1은 소켓을 닫았다는 의미)
-				System.out.println("[server] closed by client");
-				return;
+			try {
+				InetSocketAddress inetRemoteSocketAddress = (InetSocketAddress)socket.getRemoteSocketAddress(); //Client의 IPAddress, Port 가져오기 
+				String remoteHostAddress = inetRemoteSocketAddress.getAddress().getHostAddress();
+				int remotePort = inetRemoteSocketAddress.getPort();
+				
+				System.out.println("[server] : connected by client [" + remoteHostAddress + ":" + remotePort + "]");
+				
+				// 4. IO Stream 받아오기 
+				InputStream is = socket.getInputStream(); //추상화. 소켓의 InputStream 리턴
+				OutputStream os = socket.getOutputStream(); // client 소켓에서 받아오기 
+				
+				while(true) {
+					// 5. 데이터 읽기
+					byte[] buffer = new byte[256];
+					int readByteCount = is.read(buffer); //blocking (데이터 들어오기 전까지 잠듦)
+					if (readByteCount == -1) { 
+						// closed by client (소켓의 경우, -1은 소켓을 닫았다는 의미)
+						System.out.println("[server] closed by client");
+						break;
+					}
+					
+					String data = new String(buffer, 0, readByteCount, "utf-8"); //UTF-8 인코딩으로 문자열로 변환
+					System.out.println("[server] receive : " + data);
+					
+					// 6. 데이터 쓰기
+					os.write(data.getBytes("utf-8")); //string을 byte로 변경해줘야 함
+				}
+			} catch (IOException e) {
+				System.out.println("error : " + e);
+			} finally {
+				try {
+					if (socket != null && !socket.isClosed()) { //내가 클로즈 안했는데 (프로그램 등에 의해) 닫혀있을 수도 있기에 isClosed 확인 
+						socket.close();
+					}
+				} catch (IOException e) {
+					e.printStackTrace(); // 거의 안 터져서 그냥 printStackTrace로 둠
+				}
 			}
-			
-			String data = new String(buffer, 0, readByteCount, "utf-8"); //UTF-8 인코딩으로 문자열로 변환
-			System.out.println("[server] receive : " + data);
-			
-			
 		} catch (IOException e) {
 			System.out.println("[server] error : " + e);
 		} finally {
