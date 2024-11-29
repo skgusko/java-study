@@ -26,6 +26,7 @@ public class TCPServer {
 			Socket socket = serverSocket.accept(); //blocking (연결될 때까지 block, 잘 연결됐으면 데이터 통신용 소켓 생성해서 리턴) 
 			
 			try {
+				// IP와 포트를 확인하려면 InetSocketAddress로 변환 필요
 				InetSocketAddress inetRemoteSocketAddress = (InetSocketAddress)socket.getRemoteSocketAddress(); //Client의 IPAddress, Port 가져오기 
 				String remoteHostAddress = inetRemoteSocketAddress.getAddress().getHostAddress();
 				int remotePort = inetRemoteSocketAddress.getPort();
@@ -38,7 +39,7 @@ public class TCPServer {
 				
 				while(true) {
 					// 5. 데이터 읽기
-					byte[] buffer = new byte[256];
+					byte[] buffer = new byte[256]; //InputStream에서 읽어 들인 데이터를 임시로 저장하는 버퍼
 					int readByteCount = is.read(buffer); //blocking (데이터 들어오기 전까지 잠듦)
 					if (readByteCount == -1) { 
 						// closed by client (소켓의 경우, -1은 소켓을 닫았다는 의미)

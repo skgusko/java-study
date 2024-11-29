@@ -15,7 +15,7 @@ public class TCPClient {
 		try {
 			// 1. 소켓 생성
 			socket = new Socket();
-		
+			
 			// 2. 서버 연결
 			socket.connect(new InetSocketAddress("127.0.0.1", 50000));
 			
@@ -37,7 +37,6 @@ public class TCPClient {
 			
 			data = new String(buffer, 0, readByteCount, "utf-8"); //byte -> string
 			System.out.println(data);
-			
 			
 		} catch (SocketException e) {
 			System.out.println("[client] error : " + e);
