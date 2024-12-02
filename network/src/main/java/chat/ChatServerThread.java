@@ -91,7 +91,7 @@ public class ChatServerThread extends Thread {
 //		System.out.println("message : " + message);
 		
 		//writer pool 리스트 for문 돌면서 메시지 보내기
-		broadcast("MSG:" + nickName + ":" + message);
+		broadcast("MSG:" + nickName + "-" + message);
 	}
 
 	private void doQuit(PrintWriter pw) {
