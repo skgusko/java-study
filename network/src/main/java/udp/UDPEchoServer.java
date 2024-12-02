@@ -20,6 +20,8 @@ public class UDPEchoServer {
 			while(true) {
 				DatagramPacket rcvPacket = new DatagramPacket(new byte[BUFFER_SIZE], BUFFER_SIZE); 
 				socket.receive(rcvPacket);
+				
+				
 			}
 		} catch (SocketException e) {
 			System.out.println("[UDP Echo Server error:" + e);
