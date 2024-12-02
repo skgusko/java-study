@@ -63,6 +63,9 @@ public class ChatClient {
 //						log("closed server");
 //						break;
 //					}
+//					byte[] decodeBytesMsg = Base64.getDecoder().decode(encodedMessage);
+//					String message = new String(decodeBytesMsg);
+//					System.out.println("message : " + message);
 					pw.println("MSG:" + input); //server에 보낼 메시지
 					pw.flush();
 				}
