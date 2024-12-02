@@ -16,8 +16,6 @@ public class ChatServer {
 	 */
 	public static final int PORT = 9999;
 	public static final String ADDRESS = "0.0.0.0";
-
-	//pws
 	
 	public static void main(String[] args) {
 		ServerSocket serverSocket = null;

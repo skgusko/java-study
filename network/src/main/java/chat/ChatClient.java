@@ -38,12 +38,10 @@ public class ChatClient {
 			System.out.print("닉네임>>");
 			String nickName = scanner.nextLine();
 			pw.println("JOIN:" + nickName);
-//			pw.flush();
+			pw.flush();
 			
 			// 6. ChatClientReceiveThread 시작
 			new ChatClientThread(br).start();
-
-			pw.flush();
 			
 			// 7. 키보드 입력 처리
 			while(true) {
@@ -52,9 +50,8 @@ public class ChatClient {
 				
 				if ("quit".equals(input) || "QUIT".equals(input)) {
 					// 8. QUIT 프로토콜 전송
-					pw.println("QUIT:" + nickName); //프로토콜 형태로 보내기
+					pw.println("QUIT"); //프로토콜 형태로 보내기
 					pw.flush();
-					System.out.println("대화가 종료되었습니다");
 					break;
 				}
 				else {
@@ -66,6 +63,12 @@ public class ChatClient {
 //					byte[] decodeBytesMsg = Base64.getDecoder().decode(encodedMessage);
 //					String message = new String(decodeBytesMsg);
 //					System.out.println("message : " + message);
+					
+					if (input.trim().isEmpty()) {
+						System.out.println("메시지를 입력해주세요");
+						continue;
+					}
+					
 					pw.println("MSG:" + input); //server에 보낼 메시지
 					pw.flush();
 				}

@@ -50,8 +50,8 @@ public class ChatServerThread extends Thread {
 					doJoin(nickname, pw);
 				}
 				else if ("MSG".equals(tokens[0])) {
-					String encodedMessage = tokens[1];
-					doMessage(encodedMessage);
+					String message = tokens[1];
+					doMessage(message);
 				}
 				else if ("QUIT".equals(tokens[0])) {
 					doQuit(pw);
@@ -59,9 +59,6 @@ public class ChatServerThread extends Thread {
 				else {
 					//없는 요청
 				}
-				
-				
-				
 			}
 			
 		} catch (IOException e) {
@@ -72,8 +69,7 @@ public class ChatServerThread extends Thread {
 	private void doJoin(String nickName, PrintWriter pw) {
 		this.nickName = nickName;
 		
-		//String data = nickName + "님이 입장습니다.";
-		broadcast("MSG:" + nickName + "님이 입장했습니다."); //입장한 사람 제외하고 출력
+		broadcast(nickName + "님이 입장했습니다."); //입장한 사람 제외하고 출력
 		
 		// write pool 에 저장 
 		addWriter(pw);
@@ -81,30 +77,31 @@ public class ChatServerThread extends Thread {
 		// ack
 		pw.println("JOIN:OK");
 		pw.flush();
-		//System.out.println("서버 JOIN 프로토콜 보내기 완료");
 	}
 
-	//private void doMessage(String encodedMessage) {
 	private void doMessage(String message) {
-//		byte[] decodeBytesMsg = Base64.getDecoder().decode(encodedMessage);
-//		String message = new String(decodeBytesMsg);
-//		System.out.println("message : " + message);
-		
 		//writer pool 리스트 for문 돌면서 메시지 보내기
-		broadcast("MSG:" + nickName + "-" + message);
+		broadcast(nickName + ":" + message);
 	}
 
 	private void doQuit(PrintWriter pw) {
-		synchronized(listWriters) {
-			listWriters.remove(pw);
-		}
+		removeWriter(pw);
 		
-		broadcast("MSG:" + nickName + "님이 퇴장하였습니다.");
+		pw.println("QUIT:OK");
+		pw.flush();
+		
+		broadcast(nickName + "님이 퇴장하였습니다.");
 	}
 
 	private void addWriter(PrintWriter pw) {
 		synchronized(listWriters) {
 			listWriters.add(pw);
+		}
+	}
+
+	private void removeWriter(PrintWriter pw) {
+		synchronized(listWriters) {
+			listWriters.remove(pw);
 		}
 	}
 
@@ -114,6 +111,4 @@ public class ChatServerThread extends Thread {
 			pw.flush();
 		}
 	}
-
-	
 }

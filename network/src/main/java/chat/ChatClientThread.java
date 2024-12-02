@@ -22,21 +22,21 @@ public class ChatClientThread extends Thread {
 					return;
 				}
 				
-				// 프로토콜 분석 
 				String[] tokens = response.split(":");
 				if ("JOIN".equals(tokens[0])) {
 					if ("OK".equals(tokens[1])) {
 						System.out.println("입장하였습니다. 즐거운 채팅 되세요!");
-						//ChatClient.log("입장하였습니다. 즐거운 채팅 되세요!");
+						continue;
 					}
 				}
-				else if ("MSG".equals(tokens[0])) {
-					String message = tokens[1];
-					System.out.println(message);
-				}
 				else if ("QUIT".equals(tokens[0])) {
-					
+					if ("OK".equals(tokens[1])) {
+						System.out.println("대화가 종료되었습니다");
+						break;
+					}
 				}
+				
+				System.out.println(response);
 			}
 			
 		} catch (IOException e) {
