@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
@@ -133,11 +134,18 @@ public class ChatWindow {
 			finish();
 		}
 		
-		//MSG
-		//여기에서 인코딩 
-		String encodedMsg = Base64.getEncoder().encodeToString(message.getBytes());
-		pw.println("MSG:" + encodedMsg); //server에 보낼 메시지
-		pw.flush();
+		try {
+			//MSG
+			//여기에서 인코딩 
+			String encodedMsg = Base64.getEncoder().encodeToString(message.getBytes("utf-8"));
+			
+			pw.println("MSG:" + encodedMsg); //server에 보낼 메시지
+			pw.flush();
+		
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		textField.setText("");
 		textField.requestFocus();
