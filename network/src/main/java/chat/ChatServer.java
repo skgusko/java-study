@@ -32,14 +32,6 @@ public class ChatServer {
 			}
 		} catch (IOException e) {
 			log("error : " + e);
-		} finally {
-			try {
-				if (serverSocket != null && !serverSocket.isClosed()) { 
-					serverSocket.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 	

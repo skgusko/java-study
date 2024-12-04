@@ -43,12 +43,17 @@ public class ChatWindow {
 		buttonSend = new Button("Send");
 		textField = new TextField();
 		textArea = new TextArea(30, 80);
+//		textArea.setLocale(Locale.KOREAN);
 	}
 
 	public void show() {
 		// Button
-		buttonSend.setBackground(Color.WHITE);
-		buttonSend.setForeground(Color.GRAY);
+//		buttonSend.setBackground(Color.WHITE);
+//		buttonSend.setForeground(Color.GRAY);
+		
+		textField.setForeground(Color.BLACK); // 텍스트 색상
+        textField.setBackground(Color.WHITE); // 배경색
+		
 		buttonSend.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed( ActionEvent actionEvent ) {
@@ -69,6 +74,16 @@ public class ChatWindow {
 				}
 			}
 		});
+		
+//		textField.addKeyListener(new KeyAdapter() {
+//		    @Override
+//		    public void keyTyped(KeyEvent e) {
+//		        char keyChar = e.getKeyChar();
+//		        if (keyChar == KeyEvent.VK_ENTER) {
+//		            sendMessage();
+//		        }
+//		    }
+//		});
 
 		// Pannel
 		pannel.setBackground(Color.LIGHT_GRAY);
@@ -130,9 +145,9 @@ public class ChatWindow {
 		}
 		
 		
-		if ("QUIT".equals(message) || "quit".equals(message)) {
+		if ("QUIT".equalsIgnoreCase(message)) {
 			finish();
-		}
+		}	
 		
 		try {
 			//MSG
@@ -143,7 +158,6 @@ public class ChatWindow {
 			pw.flush();
 		
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -164,13 +178,19 @@ public class ChatWindow {
 	}
 	
 	private void finish() {
-		pw.println("QUIT"); //프로토콜 형태로 보내기
-		pw.flush();
-		
 		try {
+			pw.println("QUIT"); //프로토콜 형태로 보내기
+			pw.flush();
+		
+		
 			//join으로 기다리기
 			//exit java application 
-			clientThread.join();
+//			clientThread.join();
+			
+			// ChatClientThread가 종료될 때까지 대기
+	        if (clientThread != null && clientThread.isAlive()) {
+	            clientThread.join(); // 스레드가 끝날 때까지 대기 (=QUIT:OK)
+	        }
 			
 			if (socket != null && !socket.isClosed()) {
 				socket.close();
@@ -179,7 +199,7 @@ public class ChatWindow {
 			System.exit(0); // 정상 종료
 		
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			log("Thread interrupted : " + e);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -207,7 +227,7 @@ public class ChatWindow {
 					else if ("QUIT".equals(tokens[0])) {
 						if ("OK".equals(tokens[1])) {
 							updateTextArea("대화가 종료되었습니다.");
-							break;
+							break; // 스레드 종료
 						}
 					}
 					
@@ -216,7 +236,7 @@ public class ChatWindow {
 				}
 				
 			} catch (IOException e) {
-				System.out.println(e);
+				log("error : " + e);
 			}
 		}
 	}
