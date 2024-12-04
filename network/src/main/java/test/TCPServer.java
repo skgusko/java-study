@@ -68,7 +68,7 @@ public class TCPServer {
 				System.out.println("[server] error : " + e);
 			} finally {
 				try {
-					if (socket != null && !socket.isClosed()) { //내가 클로즈 안했는데 (프로그램 등에 의해) 닫혀있을 수도 있기에 isClosed 확인 
+					if (socket != null && !socket.isClosed()) {  
 						socket.close();
 					}
 				} catch (IOException e) {

@@ -7,6 +7,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.Base64;
 import java.util.List;
 
 //클라이언트와 채팅 데이터 통신
@@ -41,28 +43,42 @@ public class ChatServerThread extends Thread {
 					ChatServer.log("closed by client");
 					break;
 				}
-			
+				
 				// 4. 프로토콜 분석
 				String[] tokens = request.split(":"); //base64 인코드 상태
-				//System.out.println("=== 클라이언트에서 받은 데이터 :  " + request);
+				
+				ChatServer.log("=== 클라이언트에서 받은 데이터 = " + request); //지울 예정
 				if ("JOIN".equals(tokens[0])) {
 					String nickname = tokens[1];
 					doJoin(nickname, pw);
 				}
 				else if ("MSG".equals(tokens[0])) {
 					String message = tokens[1];
-					doMessage(message);
+					//여기에서 디코딩 
+					byte[] decodedBytes = Base64.getDecoder().decode(message);
+			        String decodedMsg = new String(decodedBytes);
+					doMessage(decodedMsg);
 				}
 				else if ("QUIT".equals(tokens[0])) {
 					doQuit(pw);
 				}
 				else {
-					//없는 요청
+					ChatServer.log("error : 알 수 없는 요청 (" + tokens[0] + ")");
 				}
 			}
 			
+		} catch (SocketException e) {
+			System.out.println("[server] Socket Exception : " + e);
 		} catch (IOException e) {
 			ChatServer.log("error : " + e);
+		} finally {
+			try {
+				if (socket != null && !socket.isClosed()) { //프로그램 등에 의해 닫혀있을 수도 있기에 isClosed 확인 
+					socket.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace(); 
+			}
 		}
 	}
 	

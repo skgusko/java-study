@@ -20,6 +20,7 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Base64;
 
 import chat.ChatServer;
 
@@ -33,6 +34,7 @@ public class ChatWindow {
 	private Socket socket;
 	private PrintWriter pw;
 	private BufferedReader br;
+	private Thread clientThread;
 
 	public ChatWindow(String name) {
 		frame = new Frame(name); //GUI 창 제목 설정 
@@ -65,7 +67,6 @@ public class ChatWindow {
 					sendMessage();
 				}
 			}
-			
 		});
 
 		// Pannel
@@ -84,6 +85,7 @@ public class ChatWindow {
 				finish();
 			}
 		});
+		
 		frame.setVisible(true);
 		frame.pack();
 		
@@ -102,13 +104,14 @@ public class ChatWindow {
 			pw.flush();
 			
 			// 4. ChatClientThread 생성
-			new ChatClientThread().start();
+			clientThread = new ChatClientThread();
+			clientThread.start();
 		
 		} catch (SocketException e) {
 			log("error : " + e);
 		} catch (IOException e) {
 			log("error : " + e);
-		}
+		} 
 	}
 	
 
@@ -120,15 +123,20 @@ public class ChatWindow {
 		String message = textField.getText();
 		
 		if (message.trim().isEmpty()) {
+//		if ("".equals(message)) {
 			updateTextArea("메시지를 입력해주세요");
 			return;
 		}
+		
 		
 		if ("QUIT".equals(message) || "quit".equals(message)) {
 			finish();
 		}
 		
-		pw.println("MSG:" + message); //server에 보낼 메시지
+		//MSG
+		//여기에서 인코딩 
+		String encodedMsg = Base64.getEncoder().encodeToString(message.getBytes());
+		pw.println("MSG:" + encodedMsg); //server에 보낼 메시지
 		pw.flush();
 		
 		textField.setText("");
@@ -152,13 +160,18 @@ public class ChatWindow {
 		pw.flush();
 		
 		try {
+			//join으로 기다리기
+			//exit java application 
+			clientThread.join();
+			
 			if (socket != null && !socket.isClosed()) {
 				socket.close();
 			}
-				
-			//exit java application 
+		
 			System.exit(0); // 정상 종료
-			
+		
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -185,7 +198,7 @@ public class ChatWindow {
 					}
 					else if ("QUIT".equals(tokens[0])) {
 						if ("OK".equals(tokens[1])) {
-							updateTextArea("대화가 종료되었습니다");
+							updateTextArea("대화가 종료되었습니다.");
 							break;
 						}
 					}

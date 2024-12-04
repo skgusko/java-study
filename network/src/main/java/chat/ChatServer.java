@@ -29,15 +29,18 @@ public class ChatServer {
 				Socket socket = serverSocket.accept();
 				
 				new ChatServerThread(socket, listWriters).start(); //클라이언트와의 채팅 데이터 통신
-			
 			}
-			
-			
 		} catch (IOException e) {
 			log("error : " + e);
+		} finally {
+			try {
+				if (serverSocket != null && !serverSocket.isClosed()) { 
+					serverSocket.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		
-		
 	}
 	
 	public static void log(String message) {
