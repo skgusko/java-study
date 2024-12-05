@@ -47,7 +47,6 @@ public class ChatServerThread extends Thread {
 				// 4. 프로토콜 분석
 				String[] tokens = request.split(":"); //base64 인코드 상태
 				
-				ChatServer.log("=== 클라이언트에서 받은 데이터 = " + request); //지울 예정
 				if ("JOIN".equals(tokens[0])) {
 					String nickname = tokens[1];
 					doJoin(nickname, pw);
@@ -57,6 +56,7 @@ public class ChatServerThread extends Thread {
 					//여기에서 디코딩 
 					byte[] decodedBytes = Base64.getDecoder().decode(message);
 			        String decodedMsg = new String(decodedBytes);
+			        ChatServer.log("클라이언트에서 받은 데이터 = MSG:" + decodedMsg); //지울 예정
 					doMessage(decodedMsg);
 				}
 				else if ("QUIT".equals(tokens[0])) {
@@ -68,7 +68,7 @@ public class ChatServerThread extends Thread {
 			}
 			
 		} catch (SocketException e) {
-			System.out.println("[server] Socket Exception : " + e);
+			ChatServer.log("Socket Exception : " + e);
 		} catch (IOException e) {
 			ChatServer.log("error : " + e);
 		} finally {

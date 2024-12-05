@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Base64;
 import java.util.Scanner;
 
 
@@ -48,7 +49,7 @@ public class ChatClient {
 				//System.out.print(">>");
 				String input = scanner.nextLine(); //client가 보내는 메시지
 				
-				if ("quit".equals(input) || "QUIT".equals(input)) {
+				if ("QUIT".equalsIgnoreCase(input)) {
 					// 8. QUIT 프로토콜 전송
 					pw.println("QUIT"); //프로토콜 형태로 보내기
 					pw.flush();
@@ -56,20 +57,13 @@ public class ChatClient {
 				}
 				else {
 					// 9. MSG 프로토콜 전송 (메시지 처리)
-//					if (data == null) {
-//						log("closed server");
-//						break;
-//					}
-//					byte[] decodeBytesMsg = Base64.getDecoder().decode(encodedMessage);
-//					String message = new String(decodeBytesMsg);
-//					System.out.println("message : " + message);
-					
 					if (input.trim().isEmpty()) {
 						System.out.println("메시지를 입력해주세요");
 						continue;
 					}
 					
-					pw.println("MSG:" + input); //server에 보낼 메시지
+					String encodedMsg = Base64.getEncoder().encodeToString(input.getBytes("utf-8"));
+					pw.println("MSG:" + encodedMsg); //server에 보낼 메시지
 					pw.flush();
 				}
 			}

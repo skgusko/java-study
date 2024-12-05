@@ -23,10 +23,12 @@ public class ChatServer {
 		
 		try {
 			serverSocket = new ServerSocket();
+			log("Server Socket 생성 완료");
 			serverSocket.bind(new InetSocketAddress(ADDRESS, PORT));
 			
 			while(true) {
 				Socket socket = serverSocket.accept();
+				log("Client Socket 연결 성공");
 				
 				new ChatServerThread(socket, listWriters).start(); //클라이언트와의 채팅 데이터 통신
 			}

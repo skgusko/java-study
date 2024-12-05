@@ -43,7 +43,6 @@ public class ChatWindow {
 		buttonSend = new Button("Send");
 		textField = new TextField();
 		textArea = new TextArea(30, 80);
-//		textArea.setLocale(Locale.KOREAN);
 	}
 
 	public void show() {
@@ -74,16 +73,6 @@ public class ChatWindow {
 				}
 			}
 		});
-		
-//		textField.addKeyListener(new KeyAdapter() {
-//		    @Override
-//		    public void keyTyped(KeyEvent e) {
-//		        char keyChar = e.getKeyChar();
-//		        if (keyChar == KeyEvent.VK_ENTER) {
-//		            sendMessage();
-//		        }
-//		    }
-//		});
 
 		// Pannel
 		pannel.setBackground(Color.LIGHT_GRAY);
@@ -139,7 +128,6 @@ public class ChatWindow {
 		String message = textField.getText();
 		
 		if (message.trim().isEmpty()) {
-//		if ("".equals(message)) {
 			updateTextArea("메시지를 입력해주세요");
 			return;
 		}
@@ -150,8 +138,6 @@ public class ChatWindow {
 		}	
 		
 		try {
-			//MSG
-			//여기에서 인코딩 
 			String encodedMsg = Base64.getEncoder().encodeToString(message.getBytes("utf-8"));
 			
 			pw.println("MSG:" + encodedMsg); //server에 보낼 메시지
@@ -163,13 +149,6 @@ public class ChatWindow {
 		
 		textField.setText("");
 		textField.requestFocus();
-		
-		// ChatClientThread에서 서버로부터 받은 메세지가 있다고 치고~
-		//updateTextArea("아무개:" + message);
-//		br 받으면 updateTextArea 호출하도록 ChatClientThread에 추가해야 
-		//pw.println("MSG:" + message);
-		
-		
 	}
 	
 	private void updateTextArea(String message) {
@@ -182,11 +161,7 @@ public class ChatWindow {
 			pw.println("QUIT"); //프로토콜 형태로 보내기
 			pw.flush();
 		
-		
-			//join으로 기다리기
 			//exit java application 
-//			clientThread.join();
-			
 			// ChatClientThread가 종료될 때까지 대기
 	        if (clientThread != null && clientThread.isAlive()) {
 	            clientThread.join(); // 스레드가 끝날 때까지 대기 (=QUIT:OK)
@@ -226,13 +201,12 @@ public class ChatWindow {
 					}
 					else if ("QUIT".equals(tokens[0])) {
 						if ("OK".equals(tokens[1])) {
-							updateTextArea("대화가 종료되었습니다.");
+							System.out.println("대화가 종료되었습니다.");
+//							updateTextArea("대화가 종료되었습니다.");
 							break; // 스레드 종료
 						}
 					}
-					
 					updateTextArea(response);
-
 				}
 				
 			} catch (IOException e) {
