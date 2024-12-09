@@ -16,5 +16,6 @@
 		<module>chapter04</module>
 		<module>designpattern-practices</module>
 		<module>network</module>
+		<module>mariadb-practices</module>
 	</modules>
 </project>

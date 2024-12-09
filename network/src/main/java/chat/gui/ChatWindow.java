@@ -56,7 +56,7 @@ public class ChatWindow {
 		buttonSend.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed( ActionEvent actionEvent ) {
-				System.out.println("clicked");
+//				System.out.println("clicked");
 				sendMessage();
 			}
 		});
